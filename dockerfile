@@ -5,11 +5,13 @@ FROM python:3.9-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# Install system dependencies (adjust if your project needs additional packages)
-RUN apt-get update && apt-get install -y \
+# Install system dependencies (including Tesseract OCR)
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libjpeg-dev \
     zlib1g-dev \
+    tesseract-ocr \
+    libtesseract-dev \
  && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
@@ -25,7 +27,6 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code
-# (Files/folders excluded via .dockerignore won't be copied)
 COPY . .
 
 # Expose the port that uvicorn will run on
